@@ -81,7 +81,7 @@ doit() {
 shell-quote() {
     for i in "$@"; do
         # --- ] has to be the first thing in the list.
-        if [[ "$i" =~ [][:space:]\$\!\&\*\(\)\{\[\}\<\>\?\~\`\'\"] ]] ; then
+        if [[ "$i" =~ [][:space:]\;\$\!\&\*\(\)\{\[\}\<\>\?\~\`\'\"] ]] ; then
             # --- if it contains a special char or a space, do the quoting.
             #
             # simple algorithm: substitute every single quote with single
