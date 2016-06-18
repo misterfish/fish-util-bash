@@ -18,6 +18,9 @@ brackr() {
     printf "〉" # 3009
 }
 
+beep() {
+    echo ""
+}
 color() {
     c=$1
     shift
