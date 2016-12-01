@@ -94,16 +94,25 @@ shell-quote() {
             # regex preceded by / to mean global.
             #
             # (yes really).
-            printf -- "%s%s%s " \' "${i//\'/\'\\\'\'}"  \'
+            printf -- "%s%s%s" \' "${i//\'/\'\\\'\'}"  \'
         else
-            printf -- "$i "
+            printf -- "$i"
         fi
     done
 }
 
+shell-quote-each() {
+    declare q
+    local i
+    for i in "$@"; do
+        push q "$(shell-quote "$i")"
+    done
+    echo "${q[@]}"
+}
+
 cmd() {
     green "$bullet "
-    printf "%s\n" "$(shell-quote "$@")"
+    printf "%s\n" "$(shell-quote-each "$@")"
     "$@"
 }
 
