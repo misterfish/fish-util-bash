@@ -212,3 +212,18 @@ chd() {
         errorf "Couldn't cd to dir %s" "$(red "$dir")"
     fi
 }
+
+# --- usage: e.g. cwd .. command
+cwd() {
+    local dir="$1"
+    chd "$dir"
+    shift
+    "$@"
+    ret=$?
+    cd -
+    if "$ret"; then
+        false
+    else
+        true
+    fi
+}
