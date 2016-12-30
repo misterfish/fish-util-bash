@@ -4,12 +4,6 @@ else
     bullet=٭
 fi
 
-_force_colors=
-
-force_colors() {
-    _force_colors=yes
-}
-
 brackl() {
     printf "〈" # 3008
 }
