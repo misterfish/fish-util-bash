@@ -221,9 +221,9 @@ cwd() {
     "$@"
     ret=$?
     cd -
-    if "$ret"; then
-        false
-    else
+    if [ "$ret" = 0 ]; then
         true
+    else
+        false
     fi
 }
