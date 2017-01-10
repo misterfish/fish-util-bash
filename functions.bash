@@ -1,4 +1,4 @@
-if which bullet >/dev/null; then
+if which bullet >/dev/null 2>&1; then
     bullet="$(bullet)"
 else
     bullet=٭
