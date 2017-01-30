@@ -116,7 +116,7 @@ cmd_eval() {
     eval "$@"
 }
 
-# --- expects arrayname to be simple word (doesn't quote).
+# --- expects arrayname to be simple word -- no shell quote performed.
 push() {
     name=$1
     eval "$name=(\"\${$name[@]}\" \"$2\")"
@@ -186,6 +186,37 @@ press_enter() {
 
 quiet() {
     "$@" >/dev/null 2>&1
+}
+
+redirect-out() {
+    local file=$1
+    shift
+    "$@" > "$file"
+}
+redirect-out-append() {
+    local file=$1
+    shift
+    "$@" >> "$file"
+}
+redirect-err() {
+    local file=$1
+    shift
+    "$@" 2> "$file"
+}
+redirect-err-append() {
+    local file=$1
+    shift
+    "$@" 2>> "$file"
+}
+redirect-out-and-err() {
+    local file=$1
+    shift
+    "$@" > "$file" 2>&1
+}
+redirect-out-and-err-append() {
+    local file=$1
+    shift
+    "$@" >> "$file" 2>&1
 }
 
 waitfor() {
