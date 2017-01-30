@@ -184,6 +184,10 @@ press_enter() {
     perl -e "print 'Press enter to continue. '; <STDIN>"
 }
 
+quiet() {
+    "$@" >/dev/null 2>&1
+}
+
 waitfor() {
     local proc
     for proc in "$@"; do
