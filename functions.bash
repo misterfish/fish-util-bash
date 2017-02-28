@@ -1,8 +1,10 @@
-if which bullet >/dev/null 2>&1; then
-    bullet="$(bullet)"
-else
-    bullet=٭
-fi
+bullet() {
+    if which bullet >/dev/null 2>&1; then
+        echo "$("$(which bullet)")"
+    else
+        echo ٭
+    fi
+}
 
 brackl() {
     printf "〈" # 3008
@@ -105,13 +107,13 @@ shell-quote-each() {
 }
 
 cmd() {
-    green "$bullet "
+    green "$(bullet) "
     printf "%s\n" "$(shell-quote-each "$@")"
     "$@"
 }
 
 cmd_eval() {
-    green "$bullet "
+    green "$(bullet) "
     echo "$@"
     eval "$@"
 }
@@ -138,7 +140,7 @@ assert_arg() {
 }
 
 info() {
-    bright-blue "$bullet "
+    bright-blue "$(bullet) "
     if [ "$1" = '-n' ]; then
         shift
         echo -n "$@"
@@ -148,12 +150,12 @@ info() {
 }
 
 error() {
-    printf >&2 "%s Error: %s\n" $(red "$bullet") "$*"
+    printf >&2 "%s Error: %s\n" $(red "$(bullet)") "$*"
     exit 1
 }
  
 warn() {
-    printf >&2 "%s %s\n" $(bright-red "$bullet") "$*"
+    printf >&2 "%s %s\n" $(bright-red "$(bullet)") "$*"
 }
 
 infof() {
@@ -255,4 +257,9 @@ cwd() {
     else
         false
     fi
+}
+
+forkit() {
+    printf "%s %s %s\n" "$(green "$(bullet)")" "$(cyan fork)" "$(shell-quote-each "$@")"
+    "$@" &
 }
