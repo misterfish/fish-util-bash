@@ -108,8 +108,10 @@ shell-quote-each() {
 
 cmd() {
     green "$(bullet) "
-    printf "%s\n" "$(shell-quote-each "$@")"
-    "$@"
+    first="$1"
+    shift
+    printf "%s %s\n" "$(bright-blue "$(shell-quote "$first")")" "$(shell-quote-each "$@")"
+    "$first" "$@"
 }
 
 cmd_eval() {
