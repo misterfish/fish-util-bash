@@ -236,6 +236,7 @@ waitfor() {
 # --- dies.
 chd() {
     dir="$1"
+    shift
     if [ ! -e "$dir" ]; then
         errorf "Dir %s doesn't exist" "$(red "$dir")"
     fi
@@ -243,6 +244,11 @@ chd() {
     infof "Chdir %s" "$(green "$dir")"
     if [ $? != 0 ]; then
         errorf "Couldn't cd to dir %s" "$(red "$dir")"
+    fi
+
+    if [ "$@" ]; then
+        cmd "$@"
+        cd -
     fi
 }
 
