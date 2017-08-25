@@ -130,8 +130,19 @@ cmd_eval() {
 
 # --- expects arrayname to be simple word -- no shell quote performed.
 push() {
-    name=$1
+    local name="$1"
     eval "$name=(\"\${$name[@]}\" \"$2\")"
+}
+
+# --- name, joinchar = ' '
+join() {
+    local name="$1"
+    local saveifs="$IFS"
+    IFS="${2:- }"
+    local ret
+    eval "ret=\"\${"'!'"${name}[*]}\""
+    IFS="$saveifs"
+    echo "$ret"
 }
 
 assert_arg() {
