@@ -1,3 +1,9 @@
+quiet_commands=
+
+quiet-commands() {
+    quiet_commands=yes
+}
+
 bullet() {
     if which bullet >/dev/null 2>&1; then
         echo "$("$(which bullet)")"
@@ -21,9 +27,9 @@ color() {
     c=$1
     shift
 
-    doit=yes
+    doit=no
 
-    if [ -n "$force_colors" ]; then
+    if [ -t 0 -o -n "$force_colors" ]; then
         doit=yes
     fi
 
@@ -110,7 +116,9 @@ cmd() {
     green "$(bullet) "
     first="$1"
     shift
-    printf "%s %s\n" "$(bright-blue "$(shell-quote "$first")")" "$(shell-quote-each "$@")"
+    if [ -z "$quiet_commands" ]; then
+        printf "%s %s\n" "$(bright-blue "$(shell-quote "$first")")" "$(shell-quote-each "$@")"
+    fi
     "$first" "$@"
 }
 
@@ -155,7 +163,7 @@ error() {
     printf >&2 "%s Error: %s\n" $(red "$(bullet)") "$*"
     exit 1
 }
- 
+
 warn() {
     printf >&2 "%s %s\n" $(bright-red "$(bullet)") "$*"
 }
@@ -188,8 +196,16 @@ press_enter() {
     perl -e "print 'Press enter to continue. '; <STDIN>"
 }
 
+shout() {
+    "$@" >/dev/null
+}
+
+sherr() {
+    "$@" 2>/dev/null
+}
+
 quiet() {
-    "$@" >/dev/null 2>&1
+    shout sherr "$@"
 }
 
 redirect-out() {
@@ -221,6 +237,9 @@ redirect-out-and-err-append() {
     local file=$1
     shift
     "$@" >> "$file" 2>&1
+}
+redirect-err-to-out() {
+    "$@" 2>&1
 }
 
 waitfor() {
