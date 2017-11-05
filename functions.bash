@@ -134,6 +134,7 @@ push() {
     eval "$name=(\"\${$name[@]}\" \"$2\")"
 }
 
+# --- only works with single char join char.
 # --- name, joinchar = ' '
 join() {
     local name="$1"
@@ -266,7 +267,7 @@ waitfor() {
 
 # --- dies.
 chd() {
-    dir="$1"
+    local dir="$1"
     shift
     if [ ! -e "$dir" ]; then
         errorf "Dir %s doesn't exist" "$(red "$dir")"
