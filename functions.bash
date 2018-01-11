@@ -362,3 +362,21 @@ safe-rm-dir-allow-absolute() {
     _safe-rm-dir yes "$@"
 }
 
+xport() {
+    local var="$1"
+    local val="$2"
+
+    info "$(printf "%s %s=%s" "$(cyan 'export')" "$(bright-red "$var")" "$val" )"
+    read $var <<< "$val"
+    export $var
+    set +x
+}
+
+# ------ short-circuit on emptiness.
+doublebar() {
+    if [ -n "$1" ]; then echo "$1"; else echo "$2"; fi
+}
+ternary() {
+    if [ -n "$1" ]; then echo "$2"; else echo "$3"; fi
+}
+
