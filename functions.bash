@@ -369,7 +369,6 @@ xport() {
     info "$(printf "%s %s=%s" "$(cyan 'export')" "$(bright-red "$var")" "$val" )"
     read $var <<< "$val"
     export $var
-    set +x
 }
 
 # ------ short-circuit on emptiness.
