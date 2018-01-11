@@ -273,7 +273,7 @@ chd() {
         errorf "Dir %s doesn't exist" "$(red "$dir")"
     fi
     cd "$dir"
-    infof "Chdir %s" "$(green "$dir")"
+    infof "%s %s" "$(cyan 'chdir')" "$(green "$dir")"
     if [ $? != 0 ]; then
         errorf "Couldn't cd to dir %s" "$(red "$dir")"
     fi
