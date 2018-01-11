@@ -303,3 +303,62 @@ forkit() {
     printf "%s %s %s\n" "$(green "$(bullet)")" "$(cyan fork)" "$(shell-quote-each "$@")"
     "$@" &
 }
+
+# --- assembles its arguments by joining on /.
+# --- croaks if:
+# - any of the arguments is empty,
+# - the first argument begins with a slash
+# - or the final string exists but is not a dir.
+# --- as an exception you can use '.' as the final element to allow an
+# absolute path.
+# --- no-op if the final string doesn't exist.
+
+_safe-rm-dir() {
+    local allow_absolute=no
+    allow_absolute="$1"
+    shift
+
+    local dir=''
+    local refuse=no
+    local reason=
+    local i
+    local first=yes
+
+    for i in "$@"; do
+        if [ "$i" = "" ]; then
+            refuse=yes
+            reason="path element empty"
+        fi
+        if [ "$first" = yes ]; then
+            first=no
+            dir="$i"
+        else
+            dir="$dir/$i"
+        fi
+    done
+
+    if [ "$refuse" = no ]; then
+        if [[ "$allow_absolute" != yes && "$dir" =~ ^/ ]]; then
+            refuse=yes
+            reason="path is absolute"
+        elif [ ! -e "$dir" ]; then
+            return 0
+        elif [ ! -d "$dir" ]; then
+            refuse=yes
+            reason="not a dir"
+        fi
+    fi
+    if [ "$refuse" = yes ]; then
+        error "$(printf "Refusing to remove %s (%s)" $(bright-red "$dir") "$reason")"
+    fi
+    cmd rm -rf "$dir"
+}
+
+safe-rm-dir() {
+    _safe-rm-dir no "$@"
+}
+
+safe-rm-dir-allow-absolute() {
+    _safe-rm-dir yes "$@"
+}
+
