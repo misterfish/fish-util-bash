@@ -5,11 +5,7 @@ quiet-commands() {
 }
 
 bullet() {
-    if which bullet >/dev/null 2>&1; then
-        echo "$("$(which bullet)")"
-    else
-        echo ٭
-    fi
+    echo ٭
 }
 
 brackl() {
@@ -117,7 +113,7 @@ cmd() {
     first="$1"
     shift
     if [ -z "$quiet_commands" ]; then
-        printf "%s %s\n" "$(bright-blue "$(shell-quote "$first")")" "$(shell-quote-each "$@")"
+        printf "%s %s\n" "$(cyan "$(shell-quote "$first")")" "$(shell-quote-each "$@")"
     fi
     "$first" "$@"
 }
@@ -273,7 +269,7 @@ chd() {
         errorf "Dir %s doesn't exist" "$(red "$dir")"
     fi
     cd "$dir"
-    infof "%s %s" "$(magenta 'chdir')" "$(green "$dir")"
+    infof "[ %s ] %s" "$(yellow 'chdir')" "$dir"
     if [ $? != 0 ]; then
         errorf "Couldn't cd to dir %s" "$(red "$dir")"
     fi
