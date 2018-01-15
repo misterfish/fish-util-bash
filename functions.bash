@@ -362,7 +362,7 @@ xport() {
     local var="$1"
     local val="$2"
 
-    info "$(printf "%s %s=%s" "$(cyan 'export')" "$(bright-red "$var")" "$val" )"
+    info "$(printf "[ %s ] %s=%s" "$(yellow env)" "$(bright-red "$var")" "$val" )"
     read $var <<< "$val"
     export $var
 }
