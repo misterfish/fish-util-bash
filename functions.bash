@@ -295,8 +295,15 @@ cwd() {
     fi
 }
 
+pipe() {
+    local rt="$1"
+    shift
+    printf "%s [ %s ] $@ | %s\n" "$(green "$(bullet)")" "$(yellow pipe)" "$(green "$rt")"
+    "$@" | "$rt"
+}
+
 forkit() {
-    printf "%s %s %s\n" "$(green "$(bullet)")" "$(cyan fork)" "$(shell-quote-each "$@")"
+    printf "%s [ %s ] %s\n" "$(green "$(bullet)")" "$(yellow fork)" "$(shell-quote-each "$@")"
     "$@" &
 }
 
@@ -362,7 +369,7 @@ xport() {
     local var="$1"
     local val="$2"
 
-    info "$(printf "[ %s ] %s=%s" "$(yellow env)" "$(bright-red "$var")" "$val" )"
+    info "$(printf "[ %s ] %s %s" "$(yellow env)" "$(bright-red "$var")" "$val" )"
     read $var <<< "$val"
     export $var
 }
