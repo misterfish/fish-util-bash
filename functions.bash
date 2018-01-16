@@ -1,25 +1,25 @@
 quiet_commands=
 
-quiet-commands() {
+quiet-commands () {
     quiet_commands=yes
 }
 
-bullet() {
+bullet () {
     echo ٭
 }
 
-brackl() {
+brackl () {
     printf "〈" # 3008
 }
 
-brackr() {
+brackr () {
     printf "〉" # 3009
 }
 
-beep() {
+beep () {
     echo ""
 }
-color() {
+color () {
     c=$1
     shift
 
@@ -37,49 +37,49 @@ color() {
     fi
 }
 
-green() {
+green () {
     color 32 "$@"
 }
-bright-green() {
+bright-green () {
     color 92 "$@"
 }
-yellow() {
+yellow () {
     color 33 "$@"
 }
-bright-yellow() {
+bright-yellow () {
     color 93 "$@"
 }
-red() {
+red () {
     color 31 "$@"
 }
-bright-red() {
+bright-red () {
     color 91 "$@"
 }
-blue() {
+blue () {
     color 34 "$@"
 }
-bright-blue() {
+bright-blue () {
     color 94 "$@"
 }
-magenta() {
+magenta () {
     color 35 "$@"
 }
-bright-magenta() {
+bright-magenta () {
     color 95 "$@"
 }
-cyan() {
+cyan () {
     color 36 "$@"
 }
-bright-cyan() {
+bright-cyan () {
     color 96 "$@"
 }
 
-doit() {
+doit () {
     echo "$@"
     "$@"
 }
 
-shell-quote() {
+shell-quote () {
     for i in "$@"; do
         # --- ] has to be the first thing in the list.
         if [[ "$i" =~ [][:space:]\;\$\!\&\*\(\)\{\[\}\<\>\?\~\`\'\"] ]] ; then
@@ -99,7 +99,7 @@ shell-quote() {
     done
 }
 
-shell-quote-each() {
+shell-quote-each () {
     declare q
     local i
     for i in "$@"; do
@@ -108,7 +108,7 @@ shell-quote-each() {
     echo "${q[@]}"
 }
 
-cmd() {
+cmd () {
     green "$(bullet) "
     first="$1"
     shift
@@ -118,21 +118,21 @@ cmd() {
     "$first" "$@"
 }
 
-cmd_eval() {
+cmd_eval () {
     green "$(bullet) "
     echo "$@"
     eval "$@"
 }
 
 # --- expects arrayname to be simple word -- no shell quote performed.
-push() {
+push () {
     name=$1
     eval "$name=(\"\${$name[@]}\" \"$2\")"
 }
 
 # --- only works with single char join char.
 # --- name, joinchar = ' '
-join() {
+join () {
     local name="$1"
     local saveifs="$IFS"
     local ret
@@ -143,7 +143,7 @@ join() {
     echo "$ret"
 }
 
-assert_arg() {
+assert_arg () {
     var=$1
     if [ -z "$var" ]; then
         echo "error assert_arg"
@@ -158,7 +158,7 @@ assert_arg() {
     fi
 }
 
-info() {
+info () {
     bright-blue "$(bullet) "
     if [ "$1" = '-n' ]; then
         shift
@@ -168,16 +168,16 @@ info() {
     fi
 }
 
-error() {
+error () {
     printf >&2 "%s Error: %s\n" $(red "$(bullet)") "$*"
     exit 1
 }
 
-warn() {
+warn () {
     printf >&2 "%s %s\n" $(bright-red "$(bullet)") "$*"
 }
 
-infof() {
+infof () {
     local e
     local one="$1"
     shift
@@ -185,7 +185,7 @@ infof() {
     info "$e"
 }
 
-errorf() {
+errorf () {
     local e
     local one="$1"
     shift
@@ -193,7 +193,7 @@ errorf() {
     error "$e"
 }
 
-warnf() {
+warnf () {
     local e
     local one="$1"
     shift
@@ -201,57 +201,57 @@ warnf() {
     warn "$e"
 }
 
-press_enter() {
+press_enter () {
     perl -e "print 'Press enter to continue. '; <STDIN>"
 }
 
-shout() {
+shout () {
     "$@" >/dev/null
 }
 
-sherr() {
+sherr () {
     "$@" 2>/dev/null
 }
 
-quiet() {
+quiet () {
     shout sherr "$@"
 }
 
-redirect-out() {
+redirect-out () {
     local file=$1
     shift
     "$@" > "$file"
 }
-redirect-out-append() {
+redirect-out-append () {
     local file=$1
     shift
     "$@" >> "$file"
 }
-redirect-err() {
+redirect-err () {
     local file=$1
     shift
     "$@" 2> "$file"
 }
-redirect-err-append() {
+redirect-err-append () {
     local file=$1
     shift
     "$@" 2>> "$file"
 }
-redirect-out-and-err() {
+redirect-out-and-err () {
     local file=$1
     shift
     "$@" > "$file" 2>&1
 }
-redirect-out-and-err-append() {
+redirect-out-and-err-append () {
     local file=$1
     shift
     "$@" >> "$file" 2>&1
 }
-redirect-err-to-out() {
+redirect-err-to-out () {
     "$@" 2>&1
 }
 
-waitfor() {
+waitfor () {
     local proc
     for proc in "$@"; do
         while ! quiet ps -C "$proc"; do
@@ -262,13 +262,13 @@ waitfor() {
 }
 
 # --- dies.
-chd() {
+chd () {
     local dir="$1"
     shift
     if [ ! -e "$dir" ]; then
         errorf "Dir %s doesn't exist" "$(red "$dir")"
     fi
-    cd "$dir"
+    redirect-out /dev/null pushd "$dir"
     infof "[ %s ] %s" "$(yellow 'chdir')" "$dir"
     if [ $? != 0 ]; then
         errorf "Couldn't cd to dir %s" "$(red "$dir")"
@@ -280,8 +280,22 @@ chd() {
     fi
 }
 
+# --- dies.
+chd-back () {
+    chd-back-n 1
+}
+
+# --- dies.
+chd-back-n () {
+    local n="$1"
+    local dir
+    dir=$(dirs +$n)
+    infof "[ %s %s ] %s" "$(yellow 'chdir-back')" "$(bright-red "$n")" "$dir"
+    redirect-out /dev/null popd
+}
+
 # --- usage: e.g. cwd .. command
-cwd() {
+cwd () {
     local dir="$1"
     chd "$dir"
     shift
@@ -295,14 +309,14 @@ cwd() {
     fi
 }
 
-pipe() {
+pipe () {
     local rt="$1"
     shift
     printf "%s [ %s ] $@ | %s\n" "$(green "$(bullet)")" "$(yellow pipe)" "$(green "$rt")"
     "$@" | "$rt"
 }
 
-forkit() {
+forkit () {
     printf "%s [ %s ] %s\n" "$(green "$(bullet)")" "$(yellow fork)" "$(shell-quote-each "$@")"
     "$@" &
 }
@@ -316,7 +330,7 @@ forkit() {
 # absolute path.
 # --- no-op if the final string doesn't exist.
 
-_safe-rm-dir() {
+_safe-rm-dir () {
     local allow_absolute=no
     allow_absolute="$1"
     shift
@@ -357,15 +371,15 @@ _safe-rm-dir() {
     cmd rm -rf "$dir"
 }
 
-safe-rm-dir() {
+safe-rm-dir () {
     _safe-rm-dir no "$@"
 }
 
-safe-rm-dir-allow-absolute() {
+safe-rm-dir-allow-absolute () {
     _safe-rm-dir yes "$@"
 }
 
-xport() {
+xport () {
     local var="$1"
     local val="$2"
 
@@ -374,11 +388,29 @@ xport() {
     export $var
 }
 
+xport-prepend () {
+    local var="$1"
+    local val="$2"
+    info "$(printf "[ %s ] %s %s" "$(yellow env-prepend)" "$(bright-red "$var")" "$val" )"
+    local cur=$(eval "echo \$$var")
+    local concat="$val:$cur"
+    xport "$var" "$concat"
+}
+
+xport-append () {
+    local var="$1"
+    local val="$2"
+    info "$(printf "[ %s ] %s %s" "$(yellow env-append)" "$(bright-red "$var")" "$val" )"
+    local cur=$(eval "echo \$$var")
+    local concat="$cur:$val"
+    xport "$var" "$concat"
+}
+
 # ------ short-circuit on emptiness.
-doublebar() {
+doublebar () {
     if [ -n "$1" ]; then echo "$1"; else echo "$2"; fi
 }
-ternary() {
+ternary () {
     if [ -n "$1" ]; then echo "$2"; else echo "$3"; fi
 }
 
