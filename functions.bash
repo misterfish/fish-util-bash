@@ -94,7 +94,7 @@ shell-quote () {
             # (yes really).
             printf -- "%s%s%s" \' "${i//\'/\'\\\'\'}"  \'
         else
-            printf -- "$i"
+            printf -- "%s" "$i"
         fi
     done
 }
@@ -312,7 +312,7 @@ cwd () {
 pipe () {
     local rt="$1"
     shift
-    printf "%s [ %s ] $@ | %s\n" "$(green "$(bullet)")" "$(yellow pipe)" "$(green "$rt")"
+    printf "%s [ %s ] %s | %s\n" "$(green "$(bullet)")" "$(yellow pipe)" "$*" "$(green "$rt")"
     "$@" | "$rt"
 }
 
