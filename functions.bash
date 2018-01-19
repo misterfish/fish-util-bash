@@ -280,6 +280,18 @@ chd () {
     fi
 }
 
+mkd () {
+    local dir="$1"
+    cmd mkdir -p "$dir"
+}
+
+# --- dies.
+mkchd () {
+    local dir="$1"
+    md "$dir"
+    chd "$dir"
+}
+
 # --- dies.
 chd-back () {
     chd-back-n 1
@@ -295,6 +307,7 @@ chd-back-n () {
 }
 
 # --- usage: e.g. cwd .. command
+# --- dies if unable to cd; otherwise returns exit val of call.
 cwd () {
     local dir="$1"
     chd "$dir"
