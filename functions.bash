@@ -25,7 +25,7 @@ color () {
 
     doit=no
 
-    if [ -t 0 -o -n "$force_colors" ]; then
+    if [ -t 0 -o -n "${force_colors:-}" ]; then
         doit=yes
     fi
 
