@@ -427,3 +427,30 @@ ternary () {
     if [ -n "$1" ]; then echo "$2"; else echo "$3"; fi
 }
 
+multiline-cmd-init () {
+    __multiline=
+}
+
+multiline-cmd-build () {
+    if [ -z "${__multiline:-}" ]; then
+        error "must call multiline-cmd-init before multiline-cmd-build"
+    fi
+    __multiline="$__multiline $@"
+}
+
+multiline-cmd-go () {
+    cmd $__multiline
+}
+
+mcg () {
+    multiline-cmd-go "$@"
+}
+
+mci () {
+    multiline-cmd-init "$@"
+}
+
+mcb () {
+    multiline-cmd-build "$@"
+}
+
