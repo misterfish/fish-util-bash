@@ -432,7 +432,7 @@ multiline-cmd-init () {
 }
 
 multiline-cmd-build () {
-    if [ -z "${__multiline:-}" ]; then
+    if [ "${__multiline+fish}" != fish ]; then
         error "must call multiline-cmd-init before multiline-cmd-build"
     fi
     __multiline="$__multiline $@"
