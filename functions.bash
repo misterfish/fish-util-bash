@@ -288,7 +288,7 @@ mkd () {
 # --- dies.
 mkchd () {
     local dir="$1"
-    md "$dir"
+    mkd "$dir"
     chd "$dir"
 }
 
