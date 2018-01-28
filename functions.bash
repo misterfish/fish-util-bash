@@ -241,6 +241,11 @@ quiet () {
     shout sherr "$@"
 }
 
+redirect-in () {
+    local file=$1
+    shift
+    "$@" < "$file"
+}
 redirect-out () {
     local file=$1
     shift
