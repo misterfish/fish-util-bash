@@ -298,12 +298,16 @@ chd-back () {
 }
 
 # --- dies.
+# --- assume n non-negative.
 chd-back-n () {
     local n="$1"
     local dir
     dir=$(dirs +$n)
     infof "[ %s %s ] %s" "$(yellow 'chdir-back')" "$(bright-red "$n")" "$dir"
-    redirect-out /dev/null popd
+    local i=0
+    while [ $i -lt $n ]; do
+        redirect-out /dev/null popd
+    done
 }
 
 # --- usage: e.g. cwd .. command
