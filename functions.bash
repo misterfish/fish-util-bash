@@ -335,6 +335,7 @@ chd-back-n () {
     infof "[ %s %s ] %s" "$(yellow 'chdir-back')" "$(bright-red "$n")" "$dir"
     local i=0
     while [ $i -lt $n ]; do
+        let i=i+1
         redirect-out /dev/null popd
     done
 }
