@@ -1,24 +1,32 @@
-quiet_commands=
+# --- hush all 'info' statements
+_quiet_info=no
+# --- hush all non-warn & non-error output (including info statements)
+_quiet_say=no
 
-quiet-commands () {
-    quiet_commands=yes
+quiet-say () {
+    _quiet_say=yes
+}
+
+noisy-say () {
+    _quiet_say=no
+}
+
+quiet-info () {
+    _quiet_info=yes
+}
+
+noisy-info () {
+    _quiet_info=no
 }
 
 bullet () {
     echo ٭
 }
 
-brackl () {
-    printf "〈" # 3008
-}
-
-brackr () {
-    printf "〉" # 3009
-}
-
 beep () {
     echo ""
 }
+
 color () {
     c=$1
     shift
@@ -105,16 +113,15 @@ shell-quote-each () {
     for i in "$@"; do
         push q "$(shell-quote "$i")"
     done
-    echo "${q[@]}"
+    echo -n "${q[@]}"
 }
 
 cmd () {
-    green "$(bullet) "
+    local b
+    b=$(green "$(bullet)")
     first="$1"
     shift
-    if [ -z "$quiet_commands" ]; then
-        printf "%s %s\n" "$(cyan "$(shell-quote "$first")")" "$(shell-quote-each "$@")"
-    fi
+    sayf "$b %s %s" "$(cyan "$(shell-quote "$first")")" "$(shell-quote-each "$@")"
     "$first" "$@"
 }
 
@@ -158,13 +165,30 @@ assert_arg () {
     fi
 }
 
+say () {
+    if [ "$_quiet_say" = yes ]; then
+        return
+    fi
+    echo "$@"
+}
+
+sayf () {
+    local e
+    printf -v e "$@"
+    say "$e"
+}
+
 info () {
-    bright-blue "$(bullet) "
+    if [ "$_quiet_info" = yes ]; then
+        return
+    fi
+    local b
+    b=$(bright-blue "$(bullet)")
     if [ "$1" = '-n' ]; then
         shift
-        echo -n "$@"
+        say -n "$b $@"
     else
-        echo "$@"
+        say "$b $@"
     fi
 }
 
@@ -217,6 +241,11 @@ quiet () {
     shout sherr "$@"
 }
 
+redirect-in () {
+    local file=$1
+    shift
+    "$@" < "$file"
+}
 redirect-out () {
     local file=$1
     shift
@@ -255,7 +284,7 @@ waitfor () {
     local proc
     for proc in "$@"; do
         while ! quiet ps -C "$proc"; do
-            printf "Still waiting for %s\n" $(yellow "$proc")
+            info "Still waiting for %s\n" $(yellow "$proc")
             sleep 1
         done
     done
@@ -329,12 +358,12 @@ cwd () {
 pipe () {
     local rt="$1"
     shift
-    printf "%s [ %s ] %s | %s\n" "$(green "$(bullet)")" "$(yellow pipe)" "$*" "$(green "$rt")"
+    sayf "%s [ %s ] %s | %s" "$(green "$(bullet)")" "$(yellow pipe)" "$*" "$(green "$rt")"
     "$@" | "$rt"
 }
 
 forkit () {
-    printf "%s [ %s ] %s\n" "$(green "$(bullet)")" "$(yellow fork)" "$(shell-quote-each "$@")"
+    sayf "%s [ %s ] %s" "$(green "$(bullet)")" "$(yellow fork)" "$(shell-quote-each "$@")"
     "$@" &
 }
 
