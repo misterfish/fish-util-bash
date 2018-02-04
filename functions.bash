@@ -108,15 +108,17 @@ shell-quote () {
 }
 
 shell-quote-each () {
-    declare q
+    local q=()
     local i
     for i in "$@"; do
-        push q "$(shell-quote "$i")"
+        q+=("$(shell-quote "$i")")
     done
     echo -n "${q[@]}"
 }
 
 cmd () {
+    echo "it's me, cmd"
+    echo "args: $@"
     local b
     b=$(green "$(bullet)")
     first="$1"
@@ -129,12 +131,6 @@ cmd_eval () {
     green "$(bullet) "
     echo "$@"
     eval "$@"
-}
-
-# --- expects arrayname to be simple word -- no shell quote performed.
-push () {
-    name=$1
-    eval "$name=(\"\${$name[@]}\" \"$2\")"
 }
 
 # --- only works with single char join char.
