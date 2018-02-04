@@ -117,8 +117,6 @@ shell-quote-each () {
 }
 
 cmd () {
-    echo "it's me, cmd"
-    echo "args: $@"
     local b
     b=$(green "$(bullet)")
     first="$1"
