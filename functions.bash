@@ -457,18 +457,20 @@ ternary () {
 }
 
 multiline-cmd-init () {
-    __multiline=
+    __multiline_init=yes
+    __multiline=()
 }
 
 multiline-cmd-build () {
-    if [ "${__multiline+fish}" != fish ]; then
+    if [ ! "$__multiline_init" = yes ]; then
         error "must call multiline-cmd-init before multiline-cmd-build"
     fi
-    __multiline="$__multiline $@"
+    __multiline+=("$@")
 }
 
 multiline-cmd-go () {
-    cmd $__multiline
+    cmd "${__multiline[@]}"
+    __multiline_init=no
 }
 
 mcg () {
