@@ -28,17 +28,16 @@ beep () {
 }
 
 color () {
-    c=$1
-    shift
+    local c="$1"; shift
 
-    doit=no
+    local doit=no
 
     if [ -t 0 -o -n "${force_colors:-}" ]; then
         doit=yes
     fi
 
     # --- difficult to make it work right for printf.
-    if [ "$doit" = 'yes' ]; then
+    if [ "$doit" = yes ]; then
         echo -n [${c}m"${@}"[0m
     else
         echo -n "$@"
@@ -119,8 +118,7 @@ shell-quote-each () {
 cmd () {
     local b
     b=$(green "$(bullet)")
-    first="$1"
-    shift
+    local first="$1"; shift
     sayf "$b %s %s" "$(cyan "$(shell-quote "$first")")" "$(shell-quote-each "$@")"
     "$first" "$@"
 }
@@ -129,34 +127,6 @@ cmd_eval () {
     green "$(bullet) "
     echo "$@"
     eval "$@"
-}
-
-# --- only works with single char join char.
-# --- name, joinchar = ' '
-join () {
-    local name="$1"
-    local saveifs="$IFS"
-    local ret
-
-    IFS="${2:- }"
-    eval "ret=\"\${${name}[*]}\""
-    IFS="$saveifs"
-    echo "$ret"
-}
-
-assert_arg () {
-    var=$1
-    if [ -z "$var" ]; then
-        echo "error assert_arg"
-        exit 1
-    fi
-    eval "val=\$$var"
-    if [ -z "$val" ]; then
-        if [ -n "$USAGE" ]; then
-            echo $USAGE
-        fi
-        exit 1
-    fi
 }
 
 say () {
@@ -196,25 +166,22 @@ warn () {
 }
 
 infof () {
+    local one="$1"; shift
     local e
-    local one="$1"
-    shift
     printf -v e "$one" "$@"
     info "$e"
 }
 
 errorf () {
+    local one="$1"; shift
     local e
-    local one="$1"
-    shift
     printf -v e "$one" "$@"
     error "$e"
 }
 
 warnf () {
+    local one="$1"; shift
     local e
-    local one="$1"
-    shift
     printf -v e "$one" "$@"
     warn "$e"
 }
@@ -286,8 +253,7 @@ waitfor () {
 
 # --- dies.
 chd () {
-    local dir="$1"
-    shift
+    local dir="$1"; shift
     if [ ! -e "$dir" ]; then
         errorf "Dir %s doesn't exist" "$(red "$dir")"
     fi
@@ -337,9 +303,8 @@ chd-back-n () {
 # --- usage: e.g. cwd .. command
 # --- dies if unable to cd; otherwise returns exit val of call.
 cwd () {
-    local dir="$1"
+    local dir="$1"; shift
     chd "$dir"
-    shift
     "$@"
     ret=$?
     cd -
@@ -425,6 +390,7 @@ xport () {
     local val="$2"
 
     info "$(printf "[ %s ] %s %s" "$(yellow env)" "$(bright-red "$var")" "$val" )"
+    # xxx
     read $var <<< "$val"
     export $var
 }
