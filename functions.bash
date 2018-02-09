@@ -484,3 +484,24 @@ mcb () {
     multiline-cmd-build "$@"
 }
 
+# --- example usage of retvar:
+#
+# count-words () {
+#      local ret="$1"; shift
+#      local cnt
+#      cnt=$(wc -w <<< "$@")
+#      retvar "$ret" "$cnt"
+# }
+#
+# count-words _ret0 'some string'
+# # or cmd count-words _ret0 'some string'
+# cnt="$_ret0" # => 2
+#
+# • read eliminates the need for eval
+# • to read the entire string (and not break on newlines), we need -d ''
+# • … which results in a non-successful exit, hence || true
+
+retvar () {
+    local ret="$1"; shift
+    read -d '' "$ret" <<< "$@" || true
+}
