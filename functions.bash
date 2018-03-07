@@ -471,3 +471,15 @@ retvar () {
     local ret="$1"; shift
     read -d '' "$ret" <<< "$@" || true
 }
+
+also () {
+    local then
+    then="$1"; shift
+    "$@" && "$then"
+}
+
+unless () {
+    local then
+    then="$1"; shift
+    "$@" || "$then"
+}

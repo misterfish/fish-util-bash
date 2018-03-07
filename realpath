@@ -1,0 +1,6 @@
+realpath () {
+    local dir="$1"
+    echo "$(cd "$dir"; pwd -P)"
+}
+
+
