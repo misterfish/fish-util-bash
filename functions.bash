@@ -251,6 +251,16 @@ waitfor () {
     done
 }
 
+waitwhile () {
+    local proc
+    for proc in "$@"; do
+        while   quiet ps -C "$proc"; do
+            info "Still waiting for %s to die\n" $(yellow "$proc")
+            sleep 1
+        done
+    done
+}
+
 # --- dies.
 chd () {
     local dir="$1"; shift
