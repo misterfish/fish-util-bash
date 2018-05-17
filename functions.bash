@@ -245,7 +245,7 @@ waitfor () {
     local proc
     for proc in "$@"; do
         while ! quiet ps -C "$proc"; do
-            info "Still waiting for %s\n" $(yellow "$proc")
+            info $(printf "Still waiting for %s\n" $(yellow "$proc"))
             sleep 1
         done
     done
@@ -255,7 +255,7 @@ waitwhile () {
     local proc
     for proc in "$@"; do
         while   quiet ps -C "$proc"; do
-            info "Still waiting for %s to die\n" $(yellow "$proc")
+            info $(printf "Still waiting for %s to die\n" $(yellow "$proc"))
             sleep 1
         done
     done
